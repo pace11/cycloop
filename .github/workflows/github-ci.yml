@@ -1,0 +1,26 @@
+name: Deployment App
+
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  run-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd pace-app/cycloop/
+            sudo rm -rf .env
+            echo "${{ secrets.ENV_PROD }}" | sudo tee .env > /dev/null
+            sudo git pull origin master
+            cd ..
+            sudo docker compose up -d --build cycloop
+            sudo docker ps
