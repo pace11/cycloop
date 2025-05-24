@@ -94,4 +94,4 @@ fetch('http://localhost:4100/api/upload', {
 
 ## 📖 Docs
 
-- Swagger Docs (soon)
+- Swagger Docs <a href="https://cycloop.pace11.my.id/api-docs/" target="_blank">(here)</a>
