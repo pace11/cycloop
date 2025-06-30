@@ -10,7 +10,7 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
       return
     }
 
-    const MAX_SIZE = 1 * 1024 * 1024 // 1 mb
+    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
     const isImage = req.file.mimetype.startsWith('image/')
 
     // defaultvalue
@@ -19,16 +19,16 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
     let objectKey = `${Date.now()}_${req.file.originalname.toLowerCase().replace(/[-\s]+/g, '_')}`
 
     if (isImage && req.file.size > MAX_SIZE) {
-      res.status(400).json({ data: null, message: 'Image size more than 1 mb' })
+      res.status(400).json({ data: null, message: 'Image size more than 5 mb' })
     }
 
     // validation if object is image type
     if (isImage) {
       const baseName = req.file.originalname.replace(/\.[^/.]+$/, '')
       // compress quality image to 50%
-      fileBuffer = await sharp(req.file.buffer).toFormat('jpeg', { quality: 50 }).toBuffer()
-      contentType = 'image/jpeg'
-      objectKey = `${Date.now()}_${baseName.toLowerCase().replace(/[-\s]+/g, '_')}.jpeg`
+      fileBuffer = await sharp(req.file.buffer).toFormat('webp', { quality: 50 }).toBuffer()
+      contentType = 'image/webp'
+      objectKey = `${Date.now()}_${baseName.toLowerCase().replace(/[-\s]+/g, '_')}.webp`
     }
 
     // put object to S3 bucket
