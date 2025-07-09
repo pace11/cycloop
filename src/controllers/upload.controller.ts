@@ -10,7 +10,7 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
       return
     }
 
-    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    const MAX_SIZE = parseInt(process.env.UPLOAD_MAX_SIZE || '5') * 1024 * 1024 // default 5MB
     const isImage = req.file.mimetype.startsWith('image/')
 
     // defaultvalue
@@ -19,7 +19,9 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
     let objectKey = `${Date.now()}_${req.file.originalname.toLowerCase().replace(/[-\s]+/g, '_')}`
 
     if (isImage && req.file.size > MAX_SIZE) {
-      res.status(400).json({ data: null, message: 'Image size more than 5 mb' })
+      res
+        .status(400)
+        .json({ data: null, message: `Image size more than ${parseInt(process.env.UPLOAD_MAX_SIZE || '5')} mb` })
     }
 
     // validation if object is image type
